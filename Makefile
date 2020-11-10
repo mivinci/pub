@@ -1,6 +1,6 @@
 .PHONY: build
 build:
-	GOOS=linux GOARCH=arm go build -o omega *.go
+	go build -o omega *.go
 
 .PHONY: docker
 docker:
