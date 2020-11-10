@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <title>Omega</title>
+  <meta name="description" content="1对1随机匹配聊天">
+  <meta name="keywords" content="聊天, 随机匹配" />
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <div class="container">
+    <header class="header">
+      <div id="exit-btn">退出</div>
+      <div class="info"></div>
+      <div class="option"></div>
+    </header>
+    <section id="log"></section>
+    <section class="form">
+      <input type="text" name="msg" id="input" autocomplete="false">
+      <button id="send-btn" disabled>发送</button>
+    </section>
+  </div>
+
+  <div id="cover">
+    <div class="cover-wrap">
+      <form id="cover-form" action="/chat" method="get">
+        <h2>想别人怎么称呼你？</h2>
+        <input class="cover-input" type="text" name="id" autofocus minlength="1" />
+        <button class="cover-btn" type="submit">开始匹配</button>
+      </form>
+      <section id="cover-status"></section>
+    </div>
+  </div>
+
+  <script src="./index.js"></script>
+
+</body>
+
+
+</html>

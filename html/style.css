@@ -1,0 +1,181 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 500px;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
+.header {
+  flex: 0 0 8%;
+  color: #fff;
+  background-color: cadetblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header>div {
+  height: 100%;
+  padding: 0 1em;
+  display: -webkit-box;
+  -webkit-box-align: center;
+}
+
+.header i {
+  font-size: 25px;
+}
+
+.header .info {
+  flex: 0 0 20%;
+}
+
+.header .info {
+  flex: 1;
+}
+
+#log {
+  flex: 1;
+  padding: 0 10px;
+  overflow: scroll;
+}
+
+.form {
+  flex: 0 0 8%;
+  display: flex;
+  align-items: center;
+  background-color: rgba(218, 214, 214, 0.274);
+}
+
+.form input {
+  padding: 4px 10px;
+  margin: 0 10px;
+  flex: 1;
+  height: 50%;
+  border: 0;
+  border-radius: 20px;
+  background-color: #fff;
+  outline: none;
+}
+
+.form #send-btn {
+  flex: 0 0 18%;
+  margin-right: 10px;
+  height: 55%;
+  font-size: .9em;
+  border: 0;
+  border-radius: 20px;
+  color: #fff;
+  background-color: cadetblue;
+}
+
+.bb {
+  display: flex;
+  flex-direction: column;
+}
+
+.bb .bb-id {
+  color: #6d6d6d;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.bb .bb-text {
+  padding: .5em .8em;
+  border-radius: 20px;
+  color: #fff;
+  background-color: cadetblue;
+}
+
+.bb-right {
+  align-items: flex-end;
+}
+
+.bb-left {
+  align-items: flex-start;
+}
+
+.bb-sys {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.bb-sys .bb-text {
+  color: #6d6d6d;
+  font-size: 12px;
+}
+
+
+#cover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  opacity: .8;
+}
+
+.cover-wrap {
+  display: flex;
+  flex-direction: column;
+
+  max-width: 500px;
+  height: 100%;
+  margin: 0 auto;
+}
+
+#cover-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 80%;
+}
+
+#cover-status {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cover-status-item {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+#cover-form h2 {
+  color: #fff;
+  font-weight: 300;
+}
+
+.cover-input {
+  width: 70%;
+  padding: 10px 20px;
+  border-radius: 30px;
+  border: 0;
+  font-size: larger;
+  text-align: center;
+  letter-spacing: 2px;
+  outline: none;
+  margin-bottom: 20px;
+}
+.cover-btn {
+  border: 0;
+  color: #fff;
+  background-color: cadetblue;
+  font-size: 18px;
+  padding: 5px 15px;
+  border-radius: 25px;
+}
+

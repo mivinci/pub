@@ -1,2 +1,3 @@
-# stranger
-You will randomly chat with a stranger here.
+# Omega
+
+Omega lets you randomly chat with a stranger.
