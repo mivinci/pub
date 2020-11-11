@@ -6,4 +6,4 @@ COPY omega /omega
 
 WORKDIR /omega
 
-ENTRYPOINT [ "./omega", "-p", "8000"]
+ENTRYPOINT [ "./omega" ]
