@@ -31,7 +31,7 @@ func (c *Client) close() {
 func (c *Client) start() {
 	defer c.close()
 
-	log.Printf("start new client")
+	// log.Printf("start new client")
 
 	for {
 		msg, _, err := wsutil.ReadClientData(*c.conn)

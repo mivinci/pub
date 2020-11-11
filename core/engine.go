@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"log"
 	"net"
 
 	"github.com/gobwas/ws/wsutil"
@@ -40,7 +39,7 @@ func (e *Engine) start() {
 			room := e.available(client)
 			room.Clients = append(room.Clients, client)
 			client.room = room
-			log.Printf("accept new client: %v", client)
+			// log.Printf("accept new client: %v", client)
 
 			// 告诉客户端正在匹配
 			b, _ := json.Marshal(newMsgSysHalt(client.ID))
@@ -67,7 +66,7 @@ func (e *Engine) start() {
 
 		// 收到一条消息，将该条消息发送到对应的聊天室
 		case msg := <-e.broadcast:
-			log.Printf("accept message: %v", msg)
+			// log.Printf("accept message: %v", msg)
 			room := e.clients[msg.Sender].room
 			if room.state == RoomUnavailable {
 				b, _ := json.Marshal(msg)
@@ -102,7 +101,7 @@ func (e *Engine) available(c *Client) *Room {
 		}
 		e.rooms[id] = room
 	}
-	log.Printf("create new room: %v", room)
+	// log.Printf("create new room: %v", room)
 	return room
 }
 

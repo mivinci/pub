@@ -4,10 +4,7 @@ window.addEventListener("DOMContentLoaded", event => {
   const MSG_TYPE_OTHER = 2;
   const MSG_TYPE_SELF = 3;
 
-  const MSG_CONTENT_SYSTEM_HALT = "halt";
-  const MSG_CONTENT_SYSTEM_START = "start";
-  const MSG_CONTENT_SYSTEM_CLOSE = "close";
-  const MSG_CONTENT_SYSTEM_LOSE = "lose";
+  const MSG_MAX_LEN = 800;
 
   const sendBtn = document.getElementById("send-btn");
   const exitBtn = document.getElementById("exit-btn");
@@ -18,7 +15,7 @@ window.addEventListener("DOMContentLoaded", event => {
   let textReady = "";
   let id = new URLSearchParams(document.location.search).get("id");
 
-  let socket = new WebSocket(`wss://${document.location.host}/ws?id=${id}`);
+  let socket = new WebSocket(`ws://${document.location.host}/ws?id=${id}`);
 
   if (socket.readyState === 3) {
     alert("服务器走丢啦～");
@@ -82,6 +79,10 @@ window.addEventListener("DOMContentLoaded", event => {
       return;
     }
     if (!textReady || textReady.length <= 0) {
+      return;
+    }
+    if (textReady.length > MSG_MAX_LEN) {
+      alert(`最多一次发送${MSG_MAX_LEN}字哦～`);
       return;
     }
     socket.send(textReady);
