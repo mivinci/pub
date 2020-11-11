@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", event => {
   let textReady = "";
   let id = new URLSearchParams(document.location.search).get("id");
 
-  let socket = new WebSocket(`ws://${document.location.host}/ws?id=${id}`);
+  let socket = new WebSocket(`wss://${document.location.host}/ws?id=${id}`);
 
   if (socket.readyState === 3) {
     alert("服务器走丢啦～");
