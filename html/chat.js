@@ -43,7 +43,7 @@ window.addEventListener("DOMContentLoaded", event => {
       if (json['Sender'] === id) {
         appendBubble({id: id, text: json['Content']}, MSG_TYPE_SELF);
       } else {
-        appendBubble({id: id, text: json['Content']}, MSG_TYPE_OTHER);
+        appendBubble({id: json['Sender'], text: json['Content']}, MSG_TYPE_OTHER);
       }
     }
   }
