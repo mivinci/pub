@@ -18,10 +18,10 @@ body {
   background-color: cadetblue;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-.header>div {
+.header > div {
   height: 100%;
   padding: 0 1em;
   display: -webkit-box;
@@ -46,11 +46,20 @@ body {
   overflow: scroll;
 }
 
+
+.noop {
+  height: 4rem;
+}
+
 .form {
-  flex: 0 0 8%;
+  position: fixed;
+  bottom: 0;
   display: flex;
   align-items: center;
   background-color: rgba(218, 214, 214, 0.274);
+  height: 4rem;
+  width: 100%;
+  max-width: 500px;
 }
 
 .form input {
@@ -68,16 +77,21 @@ body {
   flex: 0 0 18%;
   margin-right: 10px;
   height: 55%;
-  font-size: .9em;
+  font-size: 0.9em;
   border: 0;
   border-radius: 20px;
   color: #fff;
   background-color: cadetblue;
+  outline: none;
+  cursor: pointer;
 }
 
 .bb {
+  margin-bottom: 4px;
   display: flex;
   flex-direction: column;
+
+  animation: bb-up .5s;
 }
 
 .bb .bb-id {
@@ -87,7 +101,7 @@ body {
 }
 
 .bb .bb-text {
-  padding: .5em .8em;
+  padding: 0.5em 0.8em;
   border-radius: 20px;
   color: #fff;
   background-color: cadetblue;
@@ -113,7 +127,6 @@ body {
   font-size: 12px;
 }
 
-
 #cover {
   position: absolute;
   top: 0;
@@ -121,7 +134,7 @@ body {
   width: 100vw;
   height: 100vh;
   background-color: #000;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 .cover-wrap {
@@ -177,5 +190,15 @@ body {
   font-size: 18px;
   padding: 5px 15px;
   border-radius: 25px;
+  outline: none;
+  cursor: pointer;
 }
 
+@keyframes bb-up {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}

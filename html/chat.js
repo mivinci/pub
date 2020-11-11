@@ -13,6 +13,7 @@ window.addEventListener("DOMContentLoaded", event => {
   const exitBtn = document.getElementById("exit-btn");
   const refreshBtn = document.getElementById("refresh-btn");
   const input = document.getElementById("input");
+  const stateBar = document.getElementById("state");
 
   let textReady = "";
   let id = new URLSearchParams(document.location.search).get("id");
@@ -34,6 +35,7 @@ window.addEventListener("DOMContentLoaded", event => {
       if (json['Content'] === "start") {
         sendBtn.removeAttribute("disabled");
       }
+      setOmegaState(getState(json));
       appendBubble(getSysMsg(json), MSG_TYPE_SYSTEM);
       return;
     }
@@ -57,6 +59,7 @@ window.addEventListener("DOMContentLoaded", event => {
   exitBtn.addEventListener("click", function(evt) {
     if (confirm("确定要退出吗？")) {
       socket.close();
+      setOmegaState('无连接');
     }
   });
 
@@ -68,6 +71,12 @@ window.addEventListener("DOMContentLoaded", event => {
     }
   })
 
+  input.addEventListener("keypress", evt => {
+    if (evt.key === 'Enter') {
+      sendMsg();
+    }
+  })
+
   function sendMsg() {
     if (!socket) {
       return;
@@ -76,6 +85,7 @@ window.addEventListener("DOMContentLoaded", event => {
       return;
     }
     socket.send(textReady);
+    input.value = "";
     textReady = "";
   }
 
@@ -111,6 +121,10 @@ window.addEventListener("DOMContentLoaded", event => {
     }
   }
 
+  function setOmegaState(text) {
+    stateBar.innerText = text;
+  }
+
   function getSysMsg(json) {
     let msg = {};
     switch (json["Content"]) {
@@ -122,4 +136,26 @@ window.addEventListener("DOMContentLoaded", event => {
     }
     return msg;
   }
+
+  function getState(json) {
+    let text = "";
+    switch (json["Content"]) {
+      case "halt": text = "匹配中"; break;
+      case "close": text = "连接已断开"; break;
+      case "start": text = "连接稳定"; break;
+      case "lose": text = "对方已断线"; break;
+      default: ;
+    }
+    return text;
+  }
+
+  setInterval(() => {
+    const t = new Date();
+    const msg = {
+      text: `${t.getHours()}:${t.getMinutes()}`
+    }
+    appendBubble(msg, MSG_TYPE_SYSTEM);
+  }, 1000 * 60 * 15);
 })
+
+
