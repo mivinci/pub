@@ -23,7 +23,7 @@ window.addEventListener("DOMContentLoaded", event => {
   }
   
   socket.onclose = evt => {
-    setOmegaState('无连接');
+    setPubState('无连接');
     appendBubble({text: '您已断线'}, MSG_TYPE_SYSTEM);
   }
 
@@ -33,7 +33,7 @@ window.addEventListener("DOMContentLoaded", event => {
       if (json['Content'] === "start") {
         sendBtn.removeAttribute("disabled");
       }
-      setOmegaState(getState(json));
+      setPubState(getState(json));
       appendBubble(getSysMsg(json), MSG_TYPE_SYSTEM);
       return;
     }
@@ -57,7 +57,7 @@ window.addEventListener("DOMContentLoaded", event => {
   exitBtn.addEventListener("click", function(evt) {
     if (confirm("确定要退出吗？")) {
       socket.close();
-      setOmegaState('无连接');
+      setPubState('无连接');
     }
   });
 
@@ -123,7 +123,7 @@ window.addEventListener("DOMContentLoaded", event => {
     }
   }
 
-  function setOmegaState(text) {
+  function setPubState(text) {
     stateBar.innerText = text;
   }
 

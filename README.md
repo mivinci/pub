@@ -1,3 +1,3 @@
-# Omega
+# Pub
 
-Omega lets you randomly chat with a stranger.
+Pub lets you randomly chat with a stranger.
