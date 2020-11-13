@@ -23,6 +23,7 @@ window.addEventListener("DOMContentLoaded", event => {
   }
   
   socket.onclose = evt => {
+    setOmegaState('无连接');
     appendBubble({text: '您已断线'}, MSG_TYPE_SYSTEM);
   }
 
@@ -129,10 +130,10 @@ window.addEventListener("DOMContentLoaded", event => {
   function getSysMsg(json) {
     let msg = {};
     switch (json["Content"]) {
-      case "halt": msg.text = "匹配中，请等待"; break;
-      case "close": msg.text = "连接已断开"; break;
-      case "start": msg.text = "匹配成功，开始聊天吧"; break;
-      case "lose": msg.text = "对方已断线，请重新匹配"; break;
+      case "HALT": msg.text = "匹配中，请等待"; break;
+      case "CLOSE": msg.text = "连接已断开"; break;
+      case "START": msg.text = "匹配成功，开始聊天吧"; break;
+      case "LOSE": msg.text = "对方已断线，请重新匹配"; break;
       default: msg.text = json["Content"];
     }
     return msg;
@@ -141,10 +142,10 @@ window.addEventListener("DOMContentLoaded", event => {
   function getState(json) {
     let text = "";
     switch (json["Content"]) {
-      case "halt": text = "匹配中"; break;
-      case "close": text = "连接已断开"; break;
-      case "start": text = "连接稳定"; break;
-      case "lose": text = "对方已断线"; break;
+      case "HALT": text = "匹配中"; break;
+      case "CLOSE": text = "连接已断开"; break;
+      case "START": text = "连接稳定"; break;
+      case "LOSE": text = "对方已断线"; break;
       default: ;
     }
     return text;

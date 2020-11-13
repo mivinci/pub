@@ -1,9 +1,9 @@
 package core
 
 const (
-	// MsgTypeSys indicates the message is from system
+	// MsgTypeSys indicates the message is from system to user
 	MsgTypeSys = iota + 1
-	// MsgTypeClient indicates the message is from user
+	// MsgTypeClient indicates the message is from user to user
 	MsgTypeClient
 )
 
@@ -15,7 +15,7 @@ type Message struct {
 	Type     int
 }
 
-func newMsgSys(receiver, content string) Message {
+func newSysMsg(receiver, content string) Message {
 	return Message{
 		Receiver: receiver,
 		Content:  content,
@@ -23,27 +23,11 @@ func newMsgSys(receiver, content string) Message {
 	}
 }
 
-func newMsgClient(sender, receiver, content string) Message {
+func newClientMsg(sender, receiver, content string) Message {
 	return Message{
 		Sender:   sender,
 		Receiver: receiver,
 		Content:  content,
 		Type:     MsgTypeClient,
 	}
-}
-
-func newMsgSysHalt(receiver string) Message {
-	return newMsgSys(receiver, "halt")
-}
-
-func newMsgSysStart() Message {
-	return newMsgSys("", "start")
-}
-
-func newMsgSysClose() Message {
-	return newMsgSys("", "close")
-}
-
-func newMsgSysLose() Message {
-	return newMsgSys("", "lose")
 }

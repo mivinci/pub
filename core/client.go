@@ -10,6 +10,7 @@ import (
 // Client client
 type Client struct {
 	ID     string
+	Topic  string
 	conn   *net.Conn
 	room   *Room
 	engine *Engine
@@ -22,24 +23,25 @@ func (c *Client) close() {
 		c.engine.unregister <- c
 		err := (*c.conn).Close()
 		if err != nil {
-			log.Printf("close client(%s) failed %v", c.ID, err)
+			log.Printf("close client(%s) error(%v)", c.ID, err)
 		}
-		log.Printf("client(%s) left", c.ID)
+		log.Printf("client(%s) closed", c.ID)
 	}
 }
 
 func (c *Client) start() {
 	defer c.close()
 
-	// log.Printf("start new client")
+	log.Printf("start new client(%s)", c.ID)
 
 	for {
 		msg, _, err := wsutil.ReadClientData(*c.conn)
 		if err != nil {
-			c.close()
 			log.Printf("read client(%s) data failed, client closed", c.ID)
+			c.close()
 			break
 		}
-		c.engine.broadcast <- newMsgClient(c.ID, "", string(msg))
+		log.Printf("read client(%s) data(%s)", c.ID, msg)
+		c.room.broadcast <- newClientMsg(c.ID, "", string(msg))
 	}
 }

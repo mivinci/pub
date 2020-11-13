@@ -2,115 +2,86 @@ package core
 
 import (
 	"encoding/json"
+	"log"
 	"net"
 
 	"github.com/gobwas/ws/wsutil"
-	"github.com/issue9/unique"
 )
 
 // Engine engine
 type Engine struct {
 	clients    map[string]*Client
-	broadcast  chan Message
+	rooms      map[string]*Room
 	register   chan *Client
 	unregister chan *Client
-	rooms      map[string]*Room
 }
 
-// NewEngine creates a chat engine and starts it
+// NewEngine creates a new engine
 func NewEngine() *Engine {
-	engine := &Engine{
-		broadcast:  make(chan Message),
+	e := &Engine{
 		register:   make(chan *Client),
 		unregister: make(chan *Client),
 		clients:    make(map[string]*Client),
 		rooms:      make(map[string]*Room),
 	}
-	go engine.start()
-	return engine
+	go e.start()
+	return e
 }
 
 func (e *Engine) start() {
 	for {
 		select {
-		// 新用户连线
+		// 当有新用户连接
 		case client := <-e.register:
+			// 通知用户正在匹配
+			e.send(client, newSysMsg(client.ID, "HALT"))
+
 			e.clients[client.ID] = client
-			room := e.available(client)
-			room.Clients = append(room.Clients, client)
+			room := e.match(client)
+			room.AddClient(client)
 			client.room = room
-			// log.Printf("accept new client: %v", client)
+			log.Printf("client(%s) join room(%s)", client.ID, room.ID)
 
-			// 告诉客户端正在匹配
-			b, _ := json.Marshal(newMsgSysHalt(client.ID))
-			wsutil.WriteServerText(*client.conn, b)
-
-			if len(room.Clients) == room.maxClients {
-				room.state = RoomUnavailable
-				b, _ := json.Marshal(newMsgSysStart())
-				e.send(b, room)
-			}
-
-		// 某个用户连接断线
+		// 当有用户断开连接
 		case client := <-e.unregister:
+			log.Printf("unregister client(%s)", client.ID)
 			room := client.room
-			if room != nil {
-				b, _ := json.Marshal(newMsgSysLose())
-				e.send(b, room)
-				room.state = RoomDestroyed
-				// 删掉聊天室
-				delete(e.rooms, room.ID)
+			err := room.DelClient(client)
+			if err == nil {
+				room.Stop()
 			}
-			// 删掉用户
+			delete(e.rooms, room.ID)
 			delete(e.clients, client.ID)
-
-		// 收到一条消息，将该条消息发送到对应的聊天室
-		case msg := <-e.broadcast:
-			// log.Printf("accept message: %v", msg)
-			room := e.clients[msg.Sender].room
-			if room.state == RoomUnavailable {
-				b, _ := json.Marshal(msg)
-				e.send(b, room)
-			}
 		}
 	}
 }
 
-func (e *Engine) send(msg []byte, room *Room) {
-	for _, c := range room.Clients {
-		wsutil.WriteServerText(*c.conn, msg)
-	}
-}
-
-func (e *Engine) available(c *Client) *Room {
-	var room *Room
-	var avail bool
+func (e *Engine) match(c *Client) *Room {
 	for _, r := range e.rooms {
-		if r.state == RoomAvailable && !r.hasClient(c) {
-			room = r
-			avail = true
+		if r.Match(c) {
+			return r
 		}
 	}
-	if !avail {
-		id := unique.String().String()
-		room = &Room{
-			ID:         id,
-			state:      RoomAvailable,
-			maxClients: MaxClients,
-			Clients:    make([]*Client, 0, MaxClients),
-		}
-		e.rooms[id] = room
-	}
-	// log.Printf("create new room: %v", room)
-	return room
+	// 若没有匹配到房间，则创建一个房间并启动它
+	r := NewRoom(c.Topic)
+	go r.Start()
+	e.rooms[r.ID] = r
+	log.Printf("created new room(%s) that has topic(%s)", r.ID, r.Topic)
+	return r
 }
 
-// NewClient creates a client and starts it
-func (e *Engine) NewClient(conn *net.Conn, id string) *Client {
+func (e *Engine) send(c *Client, m Message) {
+	b, _ := json.Marshal(&m)
+	wsutil.WriteServerText(*c.conn, b)
+}
+
+// NewClient creates a new client and starts it
+func (e *Engine) NewClient(conn *net.Conn, id, topic string) *Client {
 	client := &Client{
 		ID:     id,
-		conn:   conn,
+		Topic:  topic,
 		engine: e,
+		conn:   conn,
 	}
 	e.register <- client
 	go client.start()

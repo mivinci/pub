@@ -8,7 +8,7 @@ import (
 
 	"github.com/gobwas/ws"
 	"github.com/issue9/unique"
-	"github.com/mivinci/omega/core"
+	"github.com/mivinci/pub/core"
 )
 
 var (
@@ -47,6 +47,7 @@ func main() {
 
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		id := r.URL.Query().Get("id")
+		topic := r.URL.Query().Get("topic")
 		if id == "" {
 			http.Error(w, "invalid id", 401)
 			return
@@ -58,7 +59,7 @@ func main() {
 			return
 		}
 
-		engine.NewClient(&conn, id)
+		engine.NewClient(&conn, id, topic)
 	})
 
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
