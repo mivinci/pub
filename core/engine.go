@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"log"
 	"net"
 
 	"github.com/gobwas/ws/wsutil"
@@ -40,11 +39,11 @@ func (e *Engine) start() {
 			room := e.match(client)
 			room.AddClient(client)
 			client.room = room
-			log.Printf("client(%s) join room(%s)", client.ID, room.ID)
+			// log.Printf("client(%s) join room(%s)", client.ID, room.ID)
 
 		// 当有用户断开连接
 		case client := <-e.unregister:
-			log.Printf("unregister client(%s)", client.ID)
+			// log.Printf("unregister client(%s)", client.ID)
 			room := client.room
 			err := room.DelClient(client)
 			if err == nil {
@@ -66,7 +65,7 @@ func (e *Engine) match(c *Client) *Room {
 	r := NewRoom(c.Topic)
 	go r.Start()
 	e.rooms[r.ID] = r
-	log.Printf("created new room(%s) that has topic(%s)", r.ID, r.Topic)
+	// log.Printf("created new room(%s) that has topic(%s)", r.ID, r.Topic)
 	return r
 }
 

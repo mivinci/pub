@@ -2,7 +2,6 @@ package core
 
 import (
 	"encoding/json"
-	"log"
 
 	"github.com/gobwas/ws/wsutil"
 	"github.com/issue9/unique"
@@ -95,7 +94,7 @@ func (r *Room) Start() {
 		case msg := <-r.broadcast:
 			r.Broadcast(msg)
 		case <-r.done:
-			log.Printf("room(%s) received a stop signal", r.ID)
+			// log.Printf("room(%s) received a stop signal", r.ID)
 			return
 		}
 	}
@@ -107,5 +106,5 @@ func (r *Room) Stop() {
 	r.Clients = nil
 	r.clientState = nil
 	r.broadcast = nil
-	log.Printf("room(%s) stopped", r.ID)
+	// log.Printf("room(%s) stopped", r.ID)
 }

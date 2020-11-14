@@ -13,6 +13,18 @@ body {
   align-content: stretch;
 }
 
+@media (min-width: 540px) {
+  .container {
+    max-width: 100%;
+  }
+  .container .header {
+    max-width: 100%;
+  }
+  .container .form {
+    max-width: 100%;
+  }
+}
+
 .header {
   position: fixed;
   top: 0;
@@ -214,4 +226,8 @@ body {
   outline: none;
   cursor: pointer;
   user-select: none;
+}
+
+.btn-disable {
+  background-color: lightgrey !important;
 }

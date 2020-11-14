@@ -12,10 +12,11 @@ window.addEventListener("DOMContentLoaded", event => {
   const input = document.getElementById("input");
   const stateBar = document.getElementById("state");
 
+  let matched = false
   let textReady = "";
   let id = new URLSearchParams(document.location.search).get("id");
 
-  let socket = new WebSocket(`ws://${document.location.host}/ws?id=${id}`);
+  let socket = new WebSocket(`wss://${document.location.host}/ws?id=${id}`);
 
   if (socket.readyState === 3) {
     alert("服务器走丢啦～");
@@ -28,10 +29,17 @@ window.addEventListener("DOMContentLoaded", event => {
   }
 
   socket.onmessage = evt => {
+    let sysMsg;
     const json = JSON.parse(evt.data);
     if (json['Type'] === MSG_TYPE_SYSTEM) {
-      if (json['Content'] === "start") {
-        sendBtn.removeAttribute("disabled");
+      sysMsg = json['Content'];
+      if (sysMsg === "START") {
+        matched = true;
+        activeSendBtn();
+      }
+      if (sysMsg === "LOSE" || sysMsg === "CLOSE") {
+        matched = false;
+        disableSendBtn();
       }
       setPubState(getState(json));
       appendBubble(getSysMsg(json), MSG_TYPE_SYSTEM);
@@ -79,6 +87,9 @@ window.addEventListener("DOMContentLoaded", event => {
     if (!socket) {
       return;
     }
+    if (!matched) {
+      return;
+    }
     if (!textReady || textReady.length <= 0) {
       return;
     }
@@ -121,6 +132,14 @@ window.addEventListener("DOMContentLoaded", event => {
     if (scroll) {
       log.scrollTop = log.scrollHeight - log.clientHeight;
     }
+  }
+
+  function disableSendBtn() {
+    sendBtn.classList.add("btn-disable");
+  }
+
+  function activeSendBtn() {
+    sendBtn.classList.remove("btn-disable");
   }
 
   function setPubState(text) {
