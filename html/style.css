@@ -13,7 +13,7 @@ body {
   align-content: stretch;
 }
 
-@media (min-width: 540px) {
+@media (max-width: 1024px) {
   .container {
     max-width: 100%;
   }
