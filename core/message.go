@@ -2,9 +2,14 @@ package core
 
 const (
 	// MsgTypeSys indicates the message is from system to user
-	MsgTypeSys = iota + 1
+	MsgTypeSys = iota + 10
+
 	// MsgTypeClient indicates the message is from user to user
-	MsgTypeClient
+	MsgTypeClient = iota + 20
+	// MsgTypeClientFocusIn indicates user is entering message
+	MsgTypeClientFocusIn
+	// MsgTypeClientFocusOut indicates user stopped entering message
+	MsgTypeClientFocusOut
 )
 
 // Message message
