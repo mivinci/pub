@@ -1,15 +1,15 @@
 .PHONY: build
 build:
-	go build -o omega *.go
+	go build -o pub *.go
 
 .PHONY: build-arm
 build-arm:
-	GOOS=linux GOARCH=arm go build -o omega *.go
+	GOOS=linux GOARCH=arm go build -o pub *.go
 
 .PHONY: docker
 docker:
-	docker build . -t omega:latest
+	docker build . -t pub:latest
 
 .PHONY: rund
 rund:
-	docker run -d -8000:8000 omega:latest
+	docker run -d -8000:8000 pub:latest
