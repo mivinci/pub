@@ -11,6 +11,7 @@ window.addEventListener("DOMContentLoaded", event => {
   const refreshBtn = document.getElementById("refresh-btn");
   const input = document.getElementById("input");
   const stateBar = document.getElementById("state");
+  const log = document.getElementById("log");
 
   let matched = false
   let textReady = "";
@@ -58,13 +59,12 @@ window.addEventListener("DOMContentLoaded", event => {
     textReady = this.value;
   });
 
-  sendBtn.addEventListener("click", function (evt) {
-    sendMsg();
-  });
+  sendBtn.addEventListener("click", sendMsg);
 
   exitBtn.addEventListener("click", function(evt) {
     if (confirm("确定要退出吗？")) {
       socket.close();
+      socket = null;
       setPubState('无连接');
     }
   });
@@ -126,7 +126,6 @@ window.addEventListener("DOMContentLoaded", event => {
       item.innerHTML = bubble(msg);
     }
 
-    const log = document.getElementById("log");
     const scroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
     log.appendChild(item);
     if (scroll) {
