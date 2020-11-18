@@ -231,3 +231,16 @@ body {
 .btn-disable {
   background-color: lightgrey !important;
 }
+
+.topic {
+  display: flex;
+  color: rgb(255, 142, 160);
+  margin-bottom: 20px;
+}
+
+.topic .topic-item {
+  padding: 5px 10px;
+  background-color: pink;
+  border-radius: 20px;
+  margin-left: 10px;
+}

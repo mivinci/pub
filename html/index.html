@@ -4,6 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>Pub | 随机匹配聊天</title>
   <meta name="description" content="随机匹配聊天">
   <meta name="keywords" content="聊天, 随机匹配" />
@@ -31,6 +34,10 @@
       <form id="cover-form" action="/chat" method="get">
         <h2>想别人怎么称呼你？</h2>
         <input class="cover-input" type="text" name="id" autofocus minlength="1" autocomplete="off" />
+        <section class="topic">
+          <div class="topic-item">妹子</div>
+          <div class="topic-item">考研</div>
+        </section>
         <button class="cover-btn" type="submit">开始匹配</button>
       </form>
       <section id="cover-status"></section>
