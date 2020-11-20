@@ -1,154 +1,157 @@
 window.addEventListener("DOMContentLoaded", event => {
 
-  const MSG_SYSTEM = 10;
-  const MSG_OTHER_CONTENT = 20;
-  const MSG_OTHER_FOCUSIN = 21;
-  const MSG_OTHER_FOCUSOUT = 22;
-  const MSG_SELF_CONTENT = 30;
+  const 来自系统的消息 = 10;
+  const 来自对方的消息 = 20;
+  const 对方正在输入 = 21;
+  const 对方停止输入 = 22;
+  const 来自自己的消息 = 30;
 
-  const MSG_MAX_LEN = 800;
+  const 消息最大长度 = 800;
 
-  const STATE_HALT = "HALT";
-  const STATE_START = "START";
-  const STATE_CLOSE = "CLOSE";
-  const STATE_LOSE = "LOSE";
+  const 匹配状态 = "HALT";
+  const 匹配成功状态 = "START";
+  const 连接断开状态 = "CLOSE";
+  const 对方连接断开状态 = "LOSE";
 
-  const STATE_FOCUSIN = "focusin";
-  const STATE_FOCUSOUT = "focusout";
+  const 对方正在输入状态 = "focusin";
+  const 对方停止输入状态 = "focusout";
 
-  const sendBtn = document.getElementById("send-btn");
-  const exitBtn = document.getElementById("exit-btn");
-  const refreshBtn = document.getElementById("refresh-btn");
-  const inputBar = document.getElementById("input");
-  const stateBar = document.getElementById("state");
+  const 真 = 0 === 0;
+  const 假 = 0 !== 0;
 
-  const Bubble = {
-    dom: null,
-    bbs: [],
-    clones: [],
-    maxBbs: 10,
+  const 发送按钮 = document.getElementById("send-btn");
+  const 退出按钮 = document.getElementById("exit-btn");
+  const 刷新按钮 = document.getElementById("refresh-btn");
+  const 输入框 = document.getElementById("input");
+  const 状态栏 = document.getElementById("state");
 
-    up(el) {
-      this.dom = document.getElementById(el);
+  const 气泡 = {
+    文件对象模型: null,
+    当前显示的气泡: [],
+    历史气泡: [],
+    气泡最大显示个数: 10,
+
+    绑定标签(标签ID) {
+      this.文件对象模型 = document.getElementById(标签ID);
     },
 
-    user(sender, receiver, text) {
-      return `<div class="bb-id">${sender}</div><div class="bb-text">${text}</div>`;
+    用户消息气泡(发送的人, 接收的人, 内容) {
+      return `<div class="bb-id">${发送的人}</div><div class="bb-text">${内容}</div>`;
     },
 
-    system(text) {
-      return `<div class="bb-text">${text}</div>`;
+    系统消息气泡(内容) {
+      return `<div class="bb-text">${内容}</div>`;
     },
 
-    append({ type, sender, receiver, text }) {
-      this.push(arguments[0]);
-      this.split();
+    添加({ 类型, 发送的人, 接收的人, 内容 }) {
+      this.保存(arguments[0]);
+      this.拆分();
 
-      let bb = document.createElement("div");
-      if (type === MSG_SYSTEM) {
-        bb.classList.add("bb-sys");
-        bb.innerHTML = this.system(text);
+      let 气泡标签 = document.createElement("div");
+      if (类型 === 来自系统的消息) {
+        气泡标签.classList.add("bb-sys");
+        气泡标签.innerHTML = this.系统消息气泡(内容);
       } else {
-        bb.classList.add("bb");
-        if (type === MSG_SELF_CONTENT) {
-          bb.classList.add("bb-right");
+        气泡标签.classList.add("bb");
+        if (类型 === 来自自己的消息) {
+          气泡标签.classList.add("bb-right");
         } else {
-          bb.classList.add("bb-left");
+          气泡标签.classList.add("bb-left");
         }
-        bb.innerHTML = this.user(sender, receiver, text);
+        气泡标签.innerHTML = this.用户消息气泡(发送的人, 接收的人, 内容);
       }
 
-      const scroll = this.dom.scrollTop > this.dom.scrollHeight - this.dom.clientHeight - 1;
-      this.dom.appendChild(bb);
-      if (scroll) {
-        this.dom.scrollTop = this.dom.scrollHeight - this.dom.clientHeight;
+      const 滚动距离 = this.文件对象模型.scrollTop > this.文件对象模型.scrollHeight - this.文件对象模型.clientHeight - 1;
+      this.文件对象模型.appendChild(气泡标签);
+      if (滚动距离) {
+        this.文件对象模型.scrollTop = this.文件对象模型.scrollHeight - this.文件对象模型.clientHeight;
       }
     },
 
-    push(msg) {
-      this.bbs.push(msg);
+    保存(消息) {
+      this.当前显示的气泡.push(消息);
     },
 
-    split() {
-      if (this.bbs.length >= this.maxBbs) {
-        this.clones.push(this.bbs);
-        this.bbs = [];
-        while (this.dom.hasChildNodes()) {
-          this.dom.removeChild(this.dom.lastChild);
+    拆分() {
+      if (this.当前显示的气泡.length >= this.气泡最大显示个数) {
+        this.历史气泡.保存(this.当前显示的气泡);
+        this.当前显示的气泡 = [];
+        while (this.文件对象模型.hasChildNodes()) {
+          this.文件对象模型.removeChild(this.文件对象模型.lastChild);
         }
-        console.log(this.clones)
+        console.log(this.历史气泡)
       }
     },
 
-    tick() {
+    计时() {
       setInterval(() => {
-        const t = new Date();
-        const msg = {
-          type: MSG_SYSTEM,
-          text: `${t.getHours()}:${t.getMinutes()}`
+        const 时间 = new Date();
+        const 消息 = {
+          类型: 来自系统的消息,
+          内容: `${时间.getHours()}:${时间.getMinutes()}`
         }
-        this.append(msg);
+        this.添加(消息);
       }, 1000 * 60 * 30);
     },
   }
 
-  Bubble.up("bb-main");
-  Bubble.tick();
+  气泡.绑定标签("bb-main");
+  气泡.计时();
 
-  const Pub = {
-    o: STATE_CLOSE,
-    get state() {
+  const 网页 = {
+    o: 连接断开状态,
+    get 状态() {
       return this.o;
     },
 
     /**
-     * @param {string} value
+     * @param {string} 值
      */
-    set state(value) {
-      this.o = value;
-      switch (value) {
-        case STATE_HALT: {
-          stateBar.innerText = "匹配中";
-          Bubble.append({
-            type: MSG_SYSTEM,
-            text: "匹配中，请等待"
+    set 状态(值) {
+      this.o = 值;
+      switch (值) {
+        case 匹配状态: {
+          状态栏.innerText = "匹配中";
+          气泡.添加({
+            类型: 来自系统的消息,
+            内容: "匹配中，请等待"
           });
           return;
         }
-        case STATE_START: {
-          stateBar.innerText = "连接稳定";
-          Bubble.append({
-            type: MSG_SYSTEM,
-            text: "匹配成功，开始聊天吧"
+        case 匹配成功状态: {
+          状态栏.innerText = "连接稳定";
+          气泡.添加({
+            类型: 来自系统的消息,
+            内容: "匹配成功，开始聊天吧"
           });
           return;
         }
-        case STATE_CLOSE: {
-          stateBar.innerText = "无连接";
-          Bubble.append({
-            type: MSG_SYSTEM,
-            text: "您已断开连接",
+        case 连接断开状态: {
+          状态栏.innerText = "无连接";
+          气泡.添加({
+            类型: 来自系统的消息,
+            内容: "您已断开连接",
           });
           return;
         }
-        case STATE_LOSE: {
-          stateBar.innerText = "无连接";
-          Bubble.append({
-            type: MSG_SYSTEM,
-            text: "对方已断线，请重新匹配"
+        case 对方连接断开状态: {
+          状态栏.innerText = "无连接";
+          气泡.添加({
+            类型: 来自系统的消息,
+            内容: "对方已断线，请重新匹配"
           })
           return;
         }
-        case STATE_FOCUSIN: {
-          stateBar.innerText = "对方正在输入";
+        case 对方正在输入状态: {
+          状态栏.innerText = "对方正在输入";
           return;
         }
-        case STATE_FOCUSOUT: {
-          stateBar.innerText = "连接稳定";
+        case 对方停止输入状态: {
+          状态栏.innerText = "连接稳定";
           return;
         }
         default: {
-          stateBar.innerText = "无连接";
+          状态栏.innerText = "无连接";
         }
       }
     },
@@ -156,118 +159,118 @@ window.addEventListener("DOMContentLoaded", event => {
 
 
 
-  let sendBuf = "";
-  let id = new URLSearchParams(document.location.search).get("id");
+  let 要发送的消息 = "";
+  let 用户名 = new URLSearchParams(document.location.search).get("id");
 
-  let socket = new WebSocket(`ws://${document.location.host}/ws?id=${id}`);
+  let 连接 = new WebSocket(`ws://${document.location.host}/ws?id=${用户名}`);
 
-  if (socket.readyState === 3) {
+  if (连接.readyState === 3) {
     alert("服务器走丢啦～");
     return;
   }
 
-  socket.onopen = evt => {
-    stateBar.innerText = "连接稳定";
+  连接.onopen = 事件 => {
+    状态栏.innerText = "连接稳定";
   }
 
-  socket.onclose = evt => {
-    Pub.state = STATE_CLOSE;
+  连接.onclose = 事件 => {
+    网页.状态 = 连接断开状态;
   }
 
-  socket.onmessage = evt => {
-    const json = JSON.parse(evt.data);
-    const content = json["Content"];
-    const type = json["Type"];
-    const sender = json["Sender"];
+  连接.onmessage = 事件 => {
+    const 接收到的数据 = JSON.parse(事件.data);
+    const 内容 = 接收到的数据["Content"];
+    const 类型 = 接收到的数据["Type"];
+    const 发送的人 = 接收到的数据["Sender"];
 
-    if (type === MSG_SYSTEM) {
-      if (content === STATE_START) {
-        Pub.state = STATE_START;
-        sendBtn.classList.remove("btn-disable");
+    if (类型 === 来自系统的消息) {
+      if (内容 === 匹配成功状态) {
+        网页.状态 = 匹配成功状态;
+        发送按钮.classList.remove("btn-disable");
         return
       }
-      Pub.state = content;
-      sendBtn.classList.add("btn-disbale");
+      网页.状态 = 内容;
+      发送按钮.classList.add("btn-disbale");
       return;
     }
-    const msg = JSON.parse(content);
-    if (msg["type"] === MSG_OTHER_CONTENT) {
-      if (sender === id) {
-        Bubble.append({
-          type: MSG_SELF_CONTENT,
-          sender: id,
-          text: msg["content"]
+    const 消息 = JSON.parse(内容);
+    if (消息["类型"] === 来自对方的消息) {
+      if (发送的人 === 用户名) {
+        气泡.添加({
+          类型: 来自自己的消息,
+          发送的人: 用户名,
+          内容: 消息["内容"]
         })
       } else {
-        Bubble.append({
-          type: MSG_OTHER_CONTENT,
-          sender: id,
-          text: msg["content"]
+        气泡.添加({
+          类型: 来自对方的消息,
+          发送的人: 用户名,
+          内容: 消息["内容"]
         })
       }
       return;
     }
-    if (msg["type"] === MSG_OTHER_FOCUSIN) {
-      if (msg["content"] !== id) {
-        Pub.state = STATE_FOCUSIN;
+    if (消息["类型"] === 对方正在输入) {
+      if (消息["内容"] !== 用户名) {
+        网页.状态 = 对方正在输入状态;
       }
       return;
     }
-    if (msg["type"] === MSG_OTHER_FOCUSOUT) {
-      if (msg["content"] !== id) {
-        Pub.state = STATE_FOCUSOUT;
+    if (消息["类型"] === 对方停止输入) {
+      if (消息["内容"] !== 用户名) {
+        网页.状态 = 对方停止输入状态;
       }
       return;
     }
   }
 
-  inputBar.addEventListener("input", function () { sendBuf = this.value })
-  inputBar.addEventListener("focusin", function () { send(MSG_OTHER_FOCUSIN, id) });
-  inputBar.addEventListener("focusout", function () { send(MSG_OTHER_FOCUSOUT, id) });
-  inputBar.addEventListener("keypress", evt => {
+  输入框.addEventListener("input", function () { 要发送的消息 = this.value })
+  输入框.addEventListener("focusin", function () { 发送(对方正在输入, 用户名) });
+  输入框.addEventListener("focusout", function () { 发送(对方停止输入, 用户名) });
+  输入框.addEventListener("keypress", evt => {
     if (evt.key === "Enter") {
-      sendUser();
+      发送用户消息();
     }
   })
 
-  sendBtn.addEventListener("click", sendUser);
+  发送按钮.addEventListener("click", 发送用户消息);
 
-  exitBtn.addEventListener("click", function(evt) {
+  退出按钮.addEventListener("click", function(evt) {
     if (confirm("确定要退出吗？")) {
-      socket.close();
-      socket = null;
-      Pub.state = STATE_CLOSE;
+      连接.close();
+      连接 = null;
+      网页.状态 = 连接断开状态;
     }
   });
 
-  refreshBtn.addEventListener("click", evt => {
+  刷新按钮.addEventListener("click", evt => {
     if (confirm("刷新会失去与对方的连接，确定刷新吗？")) {
-      socket.close();
-      socket = null;
+      连接.close();
+      连接 = null;
       document.location.reload();
     }
   })
 
-  function sendUser() {
-    if (send(MSG_OTHER_CONTENT, sendBuf)) {
-      inputBar.value = "";
-      sendBuf = "";
+  function 发送用户消息() {
+    if (发送(来自对方的消息, 要发送的消息)) {
+      输入框.value = "";
+      要发送的消息 = "";
     }
   }
 
-  function send(type, content) {
-    if (!socket || Pub.state !== STATE_START) {
-      return false;
+  function 发送(类型, 内容) {
+    if (!连接 || 网页.状态 !== 匹配成功状态) {
+      return 假;
     }
-    if (!content || content.length <= 0) {
-      return false;
+    if (!内容 || 内容.length <= 0) {
+      return 假;
     }
-    if (content.length > MSG_MAX_LEN) {
-      alert(`最多一次发送${MSG_MAX_LEN}字哦～`);
-      return false;
+    if (内容.length > 消息最大长度) {
+      alert(`最多一次发送${消息最大长度}字哦～`);
+      return 假;
     }
-    socket.send(JSON.stringify({ type, content }));
-    return true;
+    连接.send(JSON.stringify({ 类型, 内容 }));
+    return 真;
   }
 
 })

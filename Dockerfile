@@ -1,9 +1,9 @@
 FROM alpine
 
-RUN mkdir -p /omega/html
-COPY html /omega/html
-COPY omega /omega
+RUN mkdir -p /pub/html
+COPY html /pub/html
+COPY pub /pub
 
-WORKDIR /omega
+WORKDIR /pub
 
 ENTRYPOINT [ "./omega" ]
