@@ -259,7 +259,7 @@ window.addEventListener("DOMContentLoaded", event => {
   }
 
   function 发送(类型, 内容) {
-    if (!连接 || 网页.状态 !== 匹配成功状态) {
+    if (!连接) {
       return 假;
     }
     if (!内容 || 内容.length <= 0) {
@@ -269,10 +269,12 @@ window.addEventListener("DOMContentLoaded", event => {
       alert(`最多一次发送${消息最大长度}字哦～`);
       return 假;
     }
-    连接.send(JSON.stringify({ 类型, 内容 }));
-    return 真;
+    if (网页.状态 === 匹配成功状态 || 网页.状态 === 对方正在输入状态 || 网页.状态 === 对方停止输入状态) {
+      连接.send(JSON.stringify({ 类型, 内容 }));
+      return 真;
+    }
+    return 假;
   }
-
 })
 
 
